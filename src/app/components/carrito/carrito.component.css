@@ -1,0 +1,319 @@
+.carrito-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+}
+
+.carrito-titulo {
+    text-align: center;
+    margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+    padding: 1rem;
+    background-color: #2e7d32; /* Verde oscuro */
+    color: white;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.carrito-lista {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+}
+
+.carrito-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    background-color: #ffffff; /* Fondo blanco */
+    border-radius: 8px;
+    border: 1px solid #a5d6a7; /* Verde claro */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.carrito-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.producto-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.producto-nombre {
+    font-weight: 500;
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+    color: #2e7d32; /* Verde oscuro */
+}
+
+.producto-precio {
+    font-weight: 600;
+    color: #28a745;
+}
+
+.producto-imagen {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 1rem;
+}
+
+.eliminar-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-left: 1rem;
+}
+
+.eliminar-button:hover {
+    background-color: #c82333;
+}
+
+.carrito-resumen {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+    margin-top: 1rem;
+}
+
+.carrito-total {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.recibo-button {
+    background-color: #4caf50; /* Verde */
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: 500;
+}
+
+.recibo-button:hover {
+    background-color: #388e3c; /* Verde medio */
+}
+
+.carrito-vacio {
+    text-align: center;
+    color: #6c757d;
+    padding: 2rem;
+    font-size: 1.2rem;
+}
+
+.carrito-vacio-icon {
+    display: block;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.recibo {
+    margin-top: 1.5rem;
+}
+
+.recibo-titulo {
+    margin-top: 0;
+    color: #28a745;
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+}
+
+.recibo-contenido {
+    background-color: #f1f1f1;
+    padding: 1rem;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+.carrito-button {
+    display: block;
+    margin: 20px auto;
+    background-color: #4caf50; /* Verde claro */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.carrito-button:hover {
+    background-color: #43a047; /* Verde medio */
+}
+
+.cantidad-control {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.cantidad-btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.cantidad-btn-disabled {
+    background-color: #cccccc !important;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
+.cantidad-btn-disabled:hover {
+    background-color: #cccccc !important;
+}
+
+.cantidad-btn:hover {
+    background-color: #388e3c;
+}
+
+.producto-cantidad {
+    margin: 0 10px;
+    font-weight: bold;
+    min-width: 20px;
+    text-align: center;
+}
+
+.producto-cantidad-input {
+    margin: 0 10px;
+    font-weight: bold;
+    width: 50px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-size: 14px;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+/* Quita flechas del input en Chrome, Safari, Edge, Opera */
+.producto-cantidad-input::-webkit-outer-spin-button,
+.producto-cantidad-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.producto-subtotal {
+    color: #2e7d32;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+/* Estilos para confirmación de pago */
+.pago-realizado-titulo {
+    background-color: #28a745 !important;
+}
+
+.pago-confirmado {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pago-exito {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.pago-exito-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.pago-exito h3 {
+    color: #28a745;
+    font-size: 1.6rem;
+    margin: 0;
+}
+
+.pago-detalles {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.pago-detalles p {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.pago-mensaje {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #4a4a4a;
+    margin-bottom: 1.5rem;
+}
+
+.pago-acciones {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Estilos para botón de pago */
+.pagar-button {
+    background-color: #0070ba; /* Color de PayPal */
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: 500;
+}
+
+.pagar-button:hover {
+    background-color: #005ea6;
+}
+
+/* Estilos para el contenedor de PayPal */
+.paypal-container {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+.paypal-titulo {
+    text-align: center;
+    color: #0070ba;
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+}

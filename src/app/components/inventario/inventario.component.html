@@ -1,0 +1,105 @@
+<div class="inventario-container">
+  <div class="header">
+    <h1 class="main-title">Administración de Inventario</h1>
+    <div class="nav-buttons">
+      <button (click)="irAProductos()" class="btn btn-productos">Ver Catálogo</button>
+    </div>
+  </div>
+
+  <!-- Mensajes de estado -->
+  <div *ngIf="mensajeExito" class="mensaje-exito">
+    {{ mensajeExito }}
+  </div>
+  
+  <div *ngIf="mensajeError" class="mensaje-error">
+    {{ mensajeError }}
+  </div>
+
+  <!-- Formulario para agregar/editar producto -->
+  <div class="formulario-container">
+    <h2>{{ modoEdicion ? 'Editar Producto' : 'Agregar Nuevo Producto' }}</h2>
+    <form (ngSubmit)="guardarProducto()" #productoForm="ngForm">
+      <div class="form-group">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" [(ngModel)]="productoActual.nombre" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="precio">Precio:</label>
+        <input type="number" id="precio" name="precio" [(ngModel)]="productoActual.precio" required min="0" step="0.01">
+      </div>
+      
+      <div class="form-group">
+        <label for="stock">Stock:</label>
+        <input type="number" id="stock" name="stock" [(ngModel)]="productoActual.stock" required min="0">
+      </div>
+      
+      <div class="form-group">
+        <label for="categoria">Categoría:</label>
+        <input type="text" id="categoria" name="categoria" [(ngModel)]="productoActual.categoria">
+      </div>
+      
+      <div class="form-group">
+        <label for="imagen">URL de Imagen:</label>
+        <input type="text" id="imagen" name="imagen" [(ngModel)]="productoActual.imagen">
+      </div>
+      
+      <div class="form-group">
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" [(ngModel)]="productoActual.descripcion" rows="3"></textarea>
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn-guardar" [disabled]="!productoForm.form.valid">
+          {{ modoEdicion ? 'Actualizar' : 'Agregar' }} Producto
+        </button>
+        <button type="button" *ngIf="modoEdicion" class="btn-cancelar" (click)="cancelarEdicion()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tabla de productos -->
+  <div class="tabla-container">
+    <h2>Listado de Productos</h2>
+    
+    <div *ngIf="cargando" class="cargando">
+      Cargando productos...
+    </div>
+    
+    <table *ngIf="!cargando && productos.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Imagen</th>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Categoría</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let producto of productos">
+          <td>{{ producto.id }}</td>
+          <td><img [src]="producto.imagen" alt="{{ producto.nombre }}" class="producto-thumbnail"></td>
+          <td>{{ producto.nombre }}</td>
+          <td>${{ producto.precio }} MXN</td>
+          <td [class.stock-bajo]="producto.stock <= 5" [class.agotado]="producto.stock <= 0">
+            {{ producto.stock }}
+          </td>
+          <td>{{ producto.categoria || 'Sin categoría' }}</td>
+          <td class="acciones">
+            <button class="btn-editar" (click)="editarProducto(producto)">Editar</button>
+            <button class="btn-eliminar" (click)="confirmarEliminar(producto)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div *ngIf="!cargando && productos.length === 0" class="sin-productos">
+      No hay productos en el inventario. Agrega uno nuevo.
+    </div>
+  </div>
+</div>
