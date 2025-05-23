@@ -1,12 +1,26 @@
 <div class="container">
+  <!-- Encabezado (fijo en la parte superior) -->
   <div class="header">
-    <h1 class="main-title">Catálogo de productos</h1>
-    <div class="nav-buttons">
-      <button (click)="irAlCarrito()" class="btn btn-carrito">Ver Carrito</button>
-      <button (click)="irAlInventario()" class="btn btn-inventario">Administrar Inventario</button>
+    <div class="logo">
+      <span class="logo-text">PV</span>
+      <span class="brand-name">Papos Valencia</span>
+    </div>
+    <nav class="nav-links">
+      <button (click)="irAlCarrito()" class="nav-btn">Ver Carrito</button>
+      <button (click)="irAlInventario()" class="nav-btn">Administrar Inventario</button>
+    </nav>
+  </div>
+
+  <!-- Sección de Presentación -->
+  <div class="presentation">
+    <div class="presentation-content">
+      <h1 class="main-logo">PV</h1>
+      <h2 class="brand-title">PAPOS VALENCIA</h2>
+      <button (click)="scrollToProducts()" class="btn-comprar">COMPRAR AHORA</button>
     </div>
   </div>
-  
+
+  <!-- Mensajes y estados -->
   <div *ngIf="mensajeExito" class="mensaje-exito">
     {{ mensajeExito }}
   </div>
@@ -22,24 +36,29 @@
   <div *ngIf="error" class="error">
     Error al cargar los productos. Mostrando datos de respaldo.
   </div>
-  
-  <div class="productos">
+
+  <!-- Sección de Productos -->
+  <div id="productos-section" class="productos">
     <div *ngFor="let producto of productos" class="producto">
       <img [src]="producto.imagen" alt="{{producto.nombre}}" class="imagen-producto">
-      <h3>{{producto.nombre}}</h3>
-      <p class="precio">Precio: ${{producto.precio}}</p>
-      <p class="stock" [class.stock-bajo]="producto.stock <= 5" [class.agotado]="producto.stock <= 0">
-        {{ producto.stock === 0 ? 'Agotado' : 
-           producto.stock === 1 ? '¡Última unidad!' :
-           producto.stock <= 5 ? '¡Últimas ' + producto.stock + ' unidades!' : 
-           'Disponibles: ' + producto.stock }}
-      </p>
-      <button (click)="agregarAlCarrito(producto)" 
-              [disabled]="producto.stock <= 0"
-              [class.disabled]="producto.stock <= 0"
-              class="btn-agregar">
-        {{producto.stock > 0 ? 'Agregar al carrito' : 'Agotado'}}
-      </button>
+      <div class="producto-info">
+        <h3 class="producto-nombre">{{producto.nombre}}</h3>
+        <p class="precio">Precio: ${{producto.precio}}</p>
+        <p class="stock" [class.stock-bajo]="producto.stock <= 5" [class.agotado]="producto.stock <= 0">
+          {{ producto.stock === 0 ? 'Agotado' : 
+             producto.stock <= 5 ? '¡Últimas ' + producto.stock + ' unidades!' : 
+             'Disponibles: ' + producto.stock }}
+        </p>
+        <button (click)="agregarAlCarrito(producto)" 
+                [disabled]="producto.stock <= 0"
+                [class.disabled]="producto.stock <= 0"
+                class="btn-agregar">
+          {{producto.stock > 0 ? 'Agregar al carrito' : 'Agotado'}}
+        </button>
+        <button (click)="irADetalles(producto.id)" class="btn-detalles">
+          Detalles
+        </button>
+      </div>
     </div>
   </div>
 </div>

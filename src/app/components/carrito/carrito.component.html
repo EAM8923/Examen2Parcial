@@ -1,93 +1,105 @@
 <div class="carrito-container">
-    <h2 class="carrito-titulo" *ngIf="!pagoRealizado">Carrito de compras</h2>
-    <h2 class="carrito-titulo pago-realizado-titulo" *ngIf="pagoRealizado">Confirmación de Pago</h2>
+  <!-- Encabezado -->
+  <div class="header">
+    <div class="logo">
+      <span class="logo-text">PV</span>
+      <span class="brand-name">Papos Valencia</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#" (click)="irAProductos()" class="nav-btn">Inicio / Carrito</a>
+    </nav>
+  </div>
 
-    <!-- Mostrar confirmación cuando el pago se realiza -->
-    <div *ngIf="pagoRealizado" class="pago-confirmado">
-        <div class="pago-exito">
-            <span class="pago-exito-icon">✅</span>
-            <h3>¡Pago completado con éxito!</h3>
+  <!-- Título -->
+  <h2 class="carrito-titulo">Mi carrito</h2>
+
+  <!-- Contenido del Carrito -->
+  <div *ngIf="!pagoRealizado" class="carrito-wrapper">
+    <div class="carrito-contenido" *ngIf="carrito.length > 0">
+      <div class="carrito-main">
+        <ul class="carrito-lista">
+          <li class="carrito-item" *ngFor="let producto of carrito; let i = index">
+            <img [src]="producto.imagen" alt="{{ producto.nombre }}" class="producto-imagen">
+            <div class="producto-info">
+              <span class="producto-nombre">{{ producto.nombre }}</span>
+              <span class="producto-precio">${{ producto.precio }} MXN</span>
+              <div class="cantidad-control">
+                <button (click)="decrementarCantidad(i)" class="cantidad-btn">-</button>
+                <span class="producto-cantidad">{{ producto.cantidad }}</span>
+                <button (click)="incrementarCantidad(i)" 
+                        class="cantidad-btn" 
+                        [class.cantidad-btn-disabled]="producto.cantidad >= producto.stock"
+                        [disabled]="producto.cantidad >= producto.stock">+</button>
+              </div>
+            </div>
+            <button class="eliminar-button" (click)="eliminarProducto(i)">Eliminar</button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="carrito-resumen">
+        <h3 class="resumen-titulo">Resumen del pedido</h3>
+        <div class="resumen-item">
+          <span>Subtotal:</span>
+          <span>${{ calcularSubtotal() }} MXN</span>
         </div>
-        <div class="pago-detalles">
-            <p><strong>ID de transacción:</strong> {{ detallesPago.id }}</p>
-            <p><strong>Estado:</strong> {{ traducirEstado(detallesPago.status) }}</p>
-            <p><strong>Fecha:</strong> {{ detallesPago.create_time | date:'medium' }}</p>
+        <div class="resumen-item">
+          <span>Envío:</span>
+          <span>GRATIS</span>
         </div>
-        <p class="pago-mensaje">Gracias por tu compra. Tu pedido ha sido procesado correctamente.</p>
-        
-        <!-- Añadir estos botones para los recibos -->
-        <div class="pago-acciones">
-            <button class="recibo-button" (click)="generarXML()">Generar Recibo</button>
-            <button class="recibo-button" (click)="descargarXML()">Descargar Recibo</button>
+        <div class="resumen-item total">
+          <span>Total:</span>
+          <span>${{ calcularTotal() }} MXN</span>
         </div>
-        
-        <!-- Mostrar el recibo generado (si existe) -->
-        <div *ngIf="recibo" class="recibo">
-            <h3 class="recibo-titulo">Recibo</h3>
-            <pre class="recibo-contenido">{{ recibo }}</pre>
+        <button class="pagar-button" 
+                (click)="iniciarPago()" 
+                [disabled]="cargandoPaypal">
+          {{ cargandoPaypal ? 'Cargando PayPal...' : 'Pagar con PayPal' }}
+        </button>
+        <button class="recibo-button" (click)="generarRecibo()">Generar recibo</button>
+        <button class="vaciar-button" (click)="vaciarCarrito()">Vaciar carrito</button>
+      </div>
+      
+      <!-- Componente PayPal -->
+      <div *ngIf="showPaypal" class="paypal-container">
+        <div #paypalBtnContainer></div>
+        <div *ngIf="errorPaypal" class="error-paypal">
+          {{ errorPaypal }}
         </div>
-        
-        <button class="carrito-button" (click)="irAProductos()">Seguir comprando</button>
+      </div>
     </div>
 
-    <!-- Mostrar contenido del carrito solo si no hay pago realizado -->
-    <div *ngIf="!pagoRealizado">
-        <div class="carrito-contenido" *ngIf="carrito.length > 0">
-            <ul class="carrito-lista">
-                <li class="carrito-item" *ngFor="let producto of carrito; let i = index">
-                    <img [src]="producto.imagen" alt="{{ producto.nombre }}" class="producto-imagen">
-                    <div class="producto-info">
-                        <span class="producto-nombre">{{ producto.nombre }}</span>
-                        <span class="producto-precio">${{ producto.precio }} MXN</span>
-                        <div class="cantidad-control">
-                            <button (click)="decrementarCantidad(i)" class="cantidad-btn">-</button>
-                            <input 
-                                type="number" 
-                                class="producto-cantidad-input"
-                                [ngModel]="producto.cantidad" 
-                                (ngModelChange)="actualizarCantidadManual(i, $event)"
-                                min="1" 
-                                [max]="producto.stock"
-                                [disabled]="pagoRealizado">
-                            <button (click)="incrementarCantidad(i)" 
-                                    class="cantidad-btn" 
-                                    [class.cantidad-btn-disabled]="producto.cantidad >= producto.stock"
-                                    [disabled]="producto.cantidad >= producto.stock">+</button>
-                        </div>
-                    </div>
-                    <button class="eliminar-button" (click)="eliminarProducto(i)">Eliminar</button>
-                </li>
-            </ul>
+    <p *ngIf="carrito.length === 0" class="carrito-vacio">
+      <span class="carrito-vacio-icon">🛒</span>
+      El carrito está vacío
+    </p>
 
-            <div class="carrito-resumen">
-                <div class="carrito-total">
-                    <span>Total:</span>
-                    <span>${{ calcularTotal() }} MXN</span>
-                </div>
-                <button class="pagar-button" 
-                        (click)="iniciarPago()" 
-                        [disabled]="cargandoPaypal">
-                    {{ cargandoPaypal ? 'Cargando PayPal...' : 'Pagar con PayPal' }}
-                </button>
-            </div>
-            
-            <!-- Componente PayPal -->
-            <div *ngIf="showPaypal" class="paypal-container">
-                <h3 class="paypal-titulo">Finalizar compra con PayPal</h3>
-                <div #paypalBtnContainer></div>
-            </div>
-        </div>
+    <button *ngIf="carrito.length === 0" class="carrito-button" (click)="irAProductos()">Volver a Productos</button>
+  </div>
 
-        <p *ngIf="carrito.length === 0" class="carrito-vacio">
-            <span class="carrito-vacio-icon">🛒</span>
-            El carrito está vacío
-        </p>
-
-        <div *ngIf="recibo" class="recibo">
-            <h3 class="recibo-titulo">Recibo</h3>
-            <pre class="recibo-contenido">{{ recibo }}</pre>
-        </div>
-
-        <button class="carrito-button" (click)="irAProductos()">Volver a Productos</button>
+  <!-- Confirmación de Pago -->
+  <div *ngIf="pagoRealizado" class="pago-confirmado">
+    <div class="pago-exito">
+      <span class="pago-exito-icon">✅</span>
+      <h3>¡Pago completado con éxito!</h3>
     </div>
+    <div class="pago-detalles">
+      <p><strong>ID de transacción:</strong> {{ detallesPago.id }}</p>
+      <p><strong>Estado:</strong> {{ traducirEstado(detallesPago.status) }}</p>
+      <p><strong>Fecha:</strong> {{ detallesPago.create_time | date:'medium' }}</p>
+    </div>
+    <p class="pago-mensaje">Gracias por tu compra. Tu pedido ha sido procesado correctamente.</p>
+    
+    <div class="pago-acciones">
+      <button class="recibo-button" (click)="generarXML()">Generar Recibo</button>
+      <button class="recibo-button" (click)="descargarXML()">Descargar Recibo</button>
+    </div>
+    
+    <div *ngIf="recibo" class="recibo">
+      <h3 class="recibo-titulo">Recibo</h3>
+      <pre class="recibo-contenido">{{ recibo }}</pre>
+    </div>
+    
+    <button class="carrito-button" (click)="volverAComprar()">Seguir comprando</button>
+  </div>
 </div>

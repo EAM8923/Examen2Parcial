@@ -197,6 +197,18 @@ iniciarPago() {
     return this.recibo;
   }
 
+  calcularSubtotal(): string {
+    const subtotal = this.carrito.reduce((total, producto) => 
+      total + (producto.precio * producto.cantidad), 0);
+    return subtotal.toFixed(2);
+  }
+
+  calcularIVA(): string {
+    const subtotal = parseFloat(this.calcularSubtotal());
+    const iva = subtotal * 0.16;
+    return iva.toFixed(2);
+  }
+
   calcularTotal() {
     const total = this.carrito.reduce((total, producto) => 
       total + (producto.precio * producto.cantidad), 0);
@@ -256,5 +268,18 @@ iniciarPago() {
     
     // Actualizar la cantidad en el carrito
     this.carrito[index].cantidad = nuevaCantidad;
+  }
+
+  generarRecibo() {
+    this.generarXML(); // Llama a la función existente para generar el recibo
+  }
+
+  vaciarCarrito() {
+    this.carritoService.vaciarCarrito();
+    this.carrito = [];
+    if (this.paypalContainer && this.paypalContainer.nativeElement) {
+      this.paypalContainer.nativeElement.innerHTML = '';
+      this.showPaypal = false;
+    }
   }
 }

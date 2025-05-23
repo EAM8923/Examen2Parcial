@@ -76,4 +76,12 @@ export class ProductoComponent implements OnInit {
       this.mensajeError = null;
     }, 3000);
   }
+
+  scrollToProducts(): void {
+    document.getElementById('productos-section')?.scrollIntoView({ behavior: 'smooth' });
+  }
+  
+  irADetalles(productoId: number): void {
+    this.router.navigate(['/detalles', productoId]);
+  }
 }

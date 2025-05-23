@@ -14,7 +14,8 @@ import { ProductoService } from '../../services/producto.service';
 })
 export class InventarioComponent implements OnInit {
   productos: Producto[] = [];
-  productoActual: any = this.inicializarProducto();
+  productoActual: any = this.inicializarProducto(); // Para agregar nuevo producto
+  productoEdicion: any = null; // Para editar producto
   modoEdicion: boolean = false;
   cargando: boolean = true;
   mensajeExito: string | null = null;
@@ -52,35 +53,27 @@ export class InventarioComponent implements OnInit {
       precio: 0,
       stock: 0,
       categoria: '',
-      imagen: 'assets/producto.jpg'  // Imagen por defecto
+      imagen: 'assets/producto.jpg' // Imagen por defecto
     };
   }
 
   editarProducto(producto: Producto): void {
     this.modoEdicion = true;
-    // Clonamos el producto para no modificar el original hasta guardar
-    this.productoActual = { ...producto };
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.productoEdicion = { ...producto }; // Usamos una copia independiente para edición
   }
 
   cancelarEdicion(): void {
     this.modoEdicion = false;
-    this.productoActual = this.inicializarProducto();
-  }
-
-  guardarProducto(): void {
-    if (this.modoEdicion) {
-      this.actualizarProducto();
-    } else {
-      this.agregarProducto();
-    }
+    this.productoEdicion = null; // Reiniciamos solo el producto de edición
+    this.productoActual = this.inicializarProducto(); // Reiniciamos el formulario de agregar
   }
 
   agregarProducto(): void {
-    this.productoService.agregarProducto(this.productoActual).subscribe({
-      next: (nuevoProducto) => {
-        this.productos.push(nuevoProducto);
-        this.mensajeExito = `Producto "${nuevoProducto.nombre}" agregado correctamente`;
+    const nuevoProducto = { ...this.productoActual };
+    this.productoService.agregarProducto(nuevoProducto).subscribe({
+      next: (productoAgregado) => {
+        this.productos.push(productoAgregado);
+        this.mensajeExito = `Producto "${productoAgregado.nombre}" agregado correctamente`;
         this.productoActual = this.inicializarProducto();
         setTimeout(() => this.mensajeExito = null, 3000);
       },
@@ -93,24 +86,26 @@ export class InventarioComponent implements OnInit {
   }
 
   actualizarProducto(): void {
-    this.productoService.actualizarProducto(this.productoActual).subscribe({
-      next: (productoActualizado) => {
-        // Actualizamos el producto en la lista
-        const index = this.productos.findIndex(p => p.id === productoActualizado.id);
-        if (index !== -1) {
-          this.productos[index] = productoActualizado;
+    if (this.productoEdicion) {
+      this.productoService.actualizarProducto(this.productoEdicion).subscribe({
+        next: (productoActualizado) => {
+          const index = this.productos.findIndex(p => p.id === productoActualizado.id);
+          if (index !== -1) {
+            this.productos[index] = productoActualizado;
+          }
+          this.mensajeExito = `Producto "${productoActualizado.nombre}" actualizado correctamente`;
+          this.modoEdicion = false;
+          this.productoEdicion = null;
+          this.productoActual = this.inicializarProducto();
+          setTimeout(() => this.mensajeExito = null, 3000);
+        },
+        error: (error) => {
+          console.error('Error al actualizar producto:', error);
+          this.mensajeError = 'Error al actualizar el producto. Intenta nuevamente.';
+          setTimeout(() => this.mensajeError = null, 3000);
         }
-        this.mensajeExito = `Producto "${productoActualizado.nombre}" actualizado correctamente`;
-        this.modoEdicion = false;
-        this.productoActual = this.inicializarProducto();
-        setTimeout(() => this.mensajeExito = null, 3000);
-      },
-      error: (error) => {
-        console.error('Error al actualizar producto:', error);
-        this.mensajeError = 'Error al actualizar el producto. Intenta nuevamente.';
-        setTimeout(() => this.mensajeError = null, 3000);
-      }
-    });
+      });
+    }
   }
 
   confirmarEliminar(producto: Producto): void {
@@ -136,9 +131,5 @@ export class InventarioComponent implements OnInit {
 
   irAProductos(): void {
     this.router.navigate(['/productos']);
-  }
-
-  irAlCarrito(): void {
-    this.router.navigate(['/carrito']);
   }
 }

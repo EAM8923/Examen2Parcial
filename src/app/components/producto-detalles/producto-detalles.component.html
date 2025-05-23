@@ -1,0 +1,46 @@
+<div class="container">
+  <!-- Encabezado -->
+  <div class="header">
+    <div class="logo">
+      <span class="logo-text">PV</span>
+      <span class="brand-name">Papos Valencia</span>
+    </div>
+    <nav class="nav-links">
+      <button (click)="irAProductos()" class="nav-btn">Inicio / {{ producto?.nombre || 'Producto' }}</button>
+    </nav>
+  </div>
+
+  <!-- Mensajes y estados -->
+  <div *ngIf="cargando" class="cargando">
+    Cargando producto...
+  </div>
+
+  <div *ngIf="error" class="error">
+    Error al cargar el producto.
+  </div>
+
+  <!-- Detalles del Producto -->
+  <div *ngIf="producto && !cargando && !error" class="detalles-container">
+    <div class="producto-imagen">
+      <img [src]="producto.imagen" alt="{{producto.nombre}}" class="detalle-imagen">
+    </div>
+    <div class="producto-detalles">
+      <h2 class="detalle-nombre">{{ producto.nombre }}</h2>
+      <p class="detalle-sku">SKU: {{ producto.id }}</p>
+      <p class="detalle-precio">${{ producto.precio }}</p>
+      <div class="cantidad-selector">
+        <label>Cantidad:</label>
+        <button (click)="decrementarCantidad()" class="btn-cantidad">-</button>
+        <span class="cantidad">{{ cantidad }}</span>
+        <button (click)="incrementarCantidad()" class="btn-cantidad">+</button>
+      </div>
+      <button (click)="agregarAlCarrito()" 
+              [disabled]="producto.stock <= 0"
+              [class.disabled]="producto.stock <= 0"
+              class="btn-agregar-detalle">
+        Agregar al carrito
+      </button>
+      <button class="btn-comprar-detalle">Realizar compra</button>
+    </div>
+  </div>
+</div>
